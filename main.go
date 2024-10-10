@@ -1,6 +1,6 @@
 package main
 
-import "todo/cmd"
+import "github.com/asp3cto/todo/cmd"
 
 func main() {
 	cmd.Execute()

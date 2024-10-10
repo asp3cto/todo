@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/asp3cto/todo/models"
+	"github.com/asp3cto/todo/utils"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"log"
-	"todo/models"
-	"todo/utils"
 )
 
 // addCmd represents the add command

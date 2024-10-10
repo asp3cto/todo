@@ -3,10 +3,10 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/asp3cto/todo/models"
 	"github.com/spf13/viper"
 	"log"
 	"os"
-	"todo/models"
 )
 
 func InitStorage(path string) error {

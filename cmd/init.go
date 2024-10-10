@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/asp3cto/todo/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
-	"todo/utils"
 )
 
 // initCmd represents the init command

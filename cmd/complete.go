@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/asp3cto/todo/utils"
 	"github.com/spf13/cobra"
 	"log"
 	"strconv"
-	"todo/utils"
 )
 
 // completeCmd represents the complete command

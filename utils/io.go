@@ -3,8 +3,8 @@ package utils
 import (
 	"fmt"
 	"github.com/Songmu/prompter"
+	"github.com/asp3cto/todo/models"
 	"github.com/fatih/color"
-	"todo/models"
 )
 
 // Helper function to get user input with validation

@@ -1,4 +1,4 @@
-module todo
+module github.com/asp3cto/todo
 
 go 1.23.1
 

@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/asp3cto/todo/models"
+	"github.com/asp3cto/todo/utils"
 	"log"
-	"todo/models"
-	"todo/utils"
 
 	"github.com/spf13/cobra"
 )
