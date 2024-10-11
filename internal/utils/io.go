@@ -13,19 +13,19 @@ func GetInput(prompt string) string {
 }
 
 // Helper function to confirm user input
-func confirm(prompt string) bool {
-	return prompter.YN(prompt, false)
+func confirm(prompt string, defaultAnswer bool) bool {
+	return prompter.YN(prompt, defaultAnswer)
 }
 
 // Function to confirm and display todo details
 func ConfirmTodo(name, description string) bool {
 	fmt.Println("Confirm your todo:")
 	fmt.Printf("\t%s\n\t%s\n", name, description)
-	return confirm("Is information right?")
+	return confirm("Is information right?", true)
 }
 
 func ConfirmClear() bool {
-	return confirm("Clear all todos?")
+	return confirm("Clear all todos?", false)
 }
 
 func VisualizeTodo(todo db.Todo, verbose bool) {
