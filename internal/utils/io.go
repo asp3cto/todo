@@ -7,7 +7,7 @@ import (
 	"github.com/fatih/color"
 )
 
-// Helper function to get user input with validation
+// GetInput is a helper function to get user input with validation
 func GetInput(prompt string) string {
 	return prompter.Prompt(prompt, "")
 }
@@ -17,7 +17,7 @@ func confirm(prompt string, defaultAnswer bool) bool {
 	return prompter.YN(prompt, defaultAnswer)
 }
 
-// Function to confirm and display todo details
+// ConfirmTodo is a function to confirm and display todo details
 func ConfirmTodo(name, description string) bool {
 	fmt.Println("Confirm your todo:")
 	fmt.Printf("\t%s\n\t%s\n", name, description)

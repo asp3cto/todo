@@ -17,7 +17,7 @@ var clearCmd = &cobra.Command{
 	Run:   clearHandler,
 }
 
-func clearHandler(cmd *cobra.Command, args []string) {
+func clearHandler(_ *cobra.Command, _ []string) {
 	color.Red("After this, all todos will be removed!")
 	if io.ConfirmClear() {
 		repo, err := db.NewTodoRepo(viper.GetString("todos_file"))

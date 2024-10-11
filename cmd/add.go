@@ -18,7 +18,7 @@ var addCmd = &cobra.Command{
 }
 
 // Handler function for adding a todo
-func addHandler(cmd *cobra.Command, args []string) {
+func addHandler(_ *cobra.Command, _ []string) {
 	repo, err := db.NewTodoRepo(viper.GetString("todos_file"))
 	if err != nil {
 		log.Fatal(err)

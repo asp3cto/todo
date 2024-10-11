@@ -17,7 +17,7 @@ var completeCmd = &cobra.Command{
 	Run:   completeHandler,
 }
 
-func completeHandler(cmd *cobra.Command, args []string) {
+func completeHandler(_ *cobra.Command, _ []string) {
 	repo, err := db.NewTodoRepo(viper.GetString("todos_file"))
 	if err != nil {
 		log.Fatal(err)

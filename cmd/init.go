@@ -15,7 +15,7 @@ var initCmd = &cobra.Command{
 	Run:   initHandler,
 }
 
-func initHandler(cmd *cobra.Command, args []string) {
+func initHandler(_ *cobra.Command, _ []string) {
 	_, err := db.NewTodoRepo(viper.GetString("todos_file"))
 	if err != nil {
 		log.Fatal(err)

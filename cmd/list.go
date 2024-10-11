@@ -25,7 +25,7 @@ var listCmd = &cobra.Command{
 	Run: listHandler,
 }
 
-func listHandler(cmd *cobra.Command, args []string) {
+func listHandler(_ *cobra.Command, _ []string) {
 	repo, err := db.NewTodoRepo(viper.GetString("todos_file"))
 	if err != nil {
 		log.Fatal(err)

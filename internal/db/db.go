@@ -107,7 +107,7 @@ func (r *TodoRepo) SelectByCompletedStatus(completed bool) ([]Todo, error) {
 	defer func(rows *sql.Rows) {
 		err := rows.Close()
 		if err != nil {
-
+			log.Fatal(err)
 		}
 	}(rows)
 
