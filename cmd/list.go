@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/asp3cto/todo/models"
-	"github.com/asp3cto/todo/utils"
+	"github.com/asp3cto/todo/internal/db"
+	io "github.com/asp3cto/todo/internal/utils"
+	"github.com/spf13/viper"
 	"log"
 
 	"github.com/spf13/cobra"
@@ -25,38 +26,49 @@ var listCmd = &cobra.Command{
 }
 
 func listHandler(cmd *cobra.Command, args []string) {
-	todos, err := utils.GetTodos()
+	repo, err := db.NewTodoRepo(viper.GetString("todos_file"))
 	if err != nil {
-		log.Fatal("Unable to get todos:", err)
+		log.Fatal(err)
 	}
-
-	if len(todos) == 0 {
-		fmt.Println("You don't have any todos. Create some with the 'add' command. :)")
-		return
-	}
-
 	switch {
 	case all:
-		fmt.Printf("Your todos:\n\n")
-		displayTodos(todos, verbose, nil) // Display all todos
+		todos, err := repo.SelectAll()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if len(todos) == 0 {
+			fmt.Println("You dont have any todos! Use `add` to create one :)")
+			return
+		}
+		displayTodos(todos, verbose) // Display all todos
 	case done:
+		todos, err := repo.SelectByCompletedStatus(true)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if len(todos) == 0 {
+			fmt.Println("You dont have any done todos! Use `complete` to complete one :)")
+			return
+		}
 		fmt.Printf("Done todos:\n\n")
-		displayTodos(todos, verbose, func(todo models.Todo) bool {
-			return todo.Completed
-		}) // Display only completed todos
+		displayTodos(todos, verbose) // Display only completed todos
 	default:
+		todos, err := repo.SelectByCompletedStatus(false)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if len(todos) == 0 {
+			fmt.Println("You dont have any active todos! Use `add` to create one :)")
+			return
+		}
 		fmt.Printf("Current todos:\n\n")
-		displayTodos(todos, verbose, func(todo models.Todo) bool {
-			return !todo.Completed
-		}) // Display only incomplete todos
+		displayTodos(todos, verbose) // Display only incomplete todos
 	}
 }
 
-func displayTodos(todos []models.Todo, verbose bool, filter func(todo models.Todo) bool) {
+func displayTodos(todos []db.Todo, verbose bool) {
 	for _, todo := range todos {
-		if filter == nil || filter(todo) {
-			utils.VisualizeTodo(todo, verbose)
-		}
+		io.VisualizeTodo(todo, verbose)
 	}
 }
 

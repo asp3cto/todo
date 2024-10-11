@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/asp3cto/todo/utils"
+	"github.com/asp3cto/todo/internal/db"
+	io "github.com/asp3cto/todo/internal/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"log"
 	"strconv"
 )
@@ -16,8 +18,11 @@ var completeCmd = &cobra.Command{
 }
 
 func completeHandler(cmd *cobra.Command, args []string) {
-	todos, err := utils.GetTodos()
-
+	repo, err := db.NewTodoRepo(viper.GetString("todos_file"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	todos, err := repo.SelectByCompletedStatus(false)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,21 +31,23 @@ func completeHandler(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	indexToPK := make(map[int]int)
 	for i, todo := range todos {
-		if !todo.Completed {
-			fmt.Printf("%d)", i+1)
-			utils.VisualizeTodo(todo, false)
-		}
+		indexToPK[i+1] = todo.ID
 	}
-	todoID, err := strconv.Atoi(utils.GetInput("Give a number of a todo to complete"))
+
+	for i, todo := range todos {
+		fmt.Printf("%d)", i+1)
+		io.VisualizeTodo(todo, false)
+	}
+	todoID, err := strconv.Atoi(io.GetInput("Give a number of a todo to complete"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	if todoID < 1 || todoID > len(todos) {
 		log.Fatal("Incorrect number!")
 	}
-	todos[todoID-1].Completed = true
-	err = utils.SaveTodos(todos)
+	err = repo.Complete(indexToPK[todoID])
 	if err != nil {
 		log.Fatal(err)
 	}
