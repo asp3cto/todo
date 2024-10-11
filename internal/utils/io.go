@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/Songmu/prompter"
-	"github.com/asp3cto/todo/models"
+	"github.com/asp3cto/todo/internal/db"
 	"github.com/fatih/color"
 )
 
@@ -28,7 +28,7 @@ func ConfirmClear() bool {
 	return confirm("Clear all todos?")
 }
 
-func VisualizeTodo(todo models.Todo, verbose bool) {
+func VisualizeTodo(todo db.Todo, verbose bool) {
 	var titleStatus string
 	if todo.Completed {
 		titleStatus += color.GreenString(" ✔")

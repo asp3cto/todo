@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/asp3cto/todo/utils"
+	"github.com/asp3cto/todo/internal/db"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
@@ -16,7 +16,7 @@ var initCmd = &cobra.Command{
 }
 
 func initHandler(cmd *cobra.Command, args []string) {
-	err := utils.InitStorage(viper.GetString("todos_file"))
+	_, err := db.NewTodoRepo(viper.GetString("todos_file"))
 	if err != nil {
 		log.Fatal(err)
 	}

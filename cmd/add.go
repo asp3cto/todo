@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/asp3cto/todo/models"
-	"github.com/asp3cto/todo/utils"
+	"github.com/asp3cto/todo/internal/db"
+	io "github.com/asp3cto/todo/internal/utils"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"log"
 )
 
@@ -18,27 +19,24 @@ var addCmd = &cobra.Command{
 
 // Handler function for adding a todo
 func addHandler(cmd *cobra.Command, args []string) {
+	repo, err := db.NewTodoRepo(viper.GetString("todos_file"))
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println("Please, specify the name and the description of your todo 📝")
 
-	name := utils.GetInput("Name")
-	description := utils.GetInput("Description")
+	name := io.GetInput("Name")
+	description := io.GetInput("Description")
 
-	if utils.ConfirmTodo(name, description) {
-		// Get list of Todo from storage
-		todos, err := utils.GetTodos()
-		if err != nil {
-			log.Fatal("Error while getting todos from storage:", err)
-		}
+	if io.ConfirmTodo(name, description) {
 
 		// Add new todo to the list
-		todo := models.Todo{
+		todo := db.Todo{
 			Name:        name,
 			Description: description,
 			Completed:   false,
 		}
-		todos = append(todos, todo)
-
-		err = utils.SaveTodos(todos)
+		_, err := repo.Insert(todo)
 		if err != nil {
 			log.Fatal(err)
 		}
