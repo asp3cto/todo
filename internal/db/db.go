@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 )
@@ -12,12 +13,14 @@ type TodoRepo struct {
 	insert, selectAll            *sql.Stmt
 	selectByCompleted, deleteAll *sql.Stmt
 	updateCompleted              *sql.Stmt
+	updateCompletedByName        *sql.Stmt
+	selectByName                 *sql.Stmt
 }
 
 const createTodoTable = `
 CREATE TABLE IF NOT EXISTS todo (
     id INTEGER NOT NULL PRIMARY KEY,
-    name TEXT,
+    name TEXT UNIQUE NOT NULL,
     description TEXT,
     completed BOOLEAN DEFAULT FALSE
 );
@@ -54,13 +57,25 @@ func NewTodoRepo(path string) (*TodoRepo, error) {
 		return nil, err
 	}
 
+	updateCompletedByName, err := db.Prepare("UPDATE todo SET completed=TRUE WHERE name=?;")
+	if err != nil {
+		return nil, err
+	}
+
+	selectByName, err := db.Prepare("SELECT * FROM todo WHERE name=?;")
+	if err != nil {
+		return nil, err
+	}
+
 	return &TodoRepo{
-		db:                db,
-		insert:            insert,
-		selectAll:         selectAll,
-		selectByCompleted: selectByCompleted,
-		deleteAll:         deleteAll,
-		updateCompleted:   updateCompleted,
+		db:                    db,
+		insert:                insert,
+		selectAll:             selectAll,
+		selectByCompleted:     selectByCompleted,
+		deleteAll:             deleteAll,
+		updateCompleted:       updateCompleted,
+		updateCompletedByName: updateCompletedByName,
+		selectByName:          selectByName,
 	}, nil
 }
 
@@ -130,4 +145,23 @@ func (r *TodoRepo) Clear() error {
 func (r *TodoRepo) Complete(todoID int) error {
 	_, err := r.updateCompleted.Exec(todoID)
 	return err
+}
+
+func (r *TodoRepo) CompleteByName(name string) error {
+	_, err := r.updateCompletedByName.Exec(name)
+	return err
+}
+
+func (r *TodoRepo) GetByName(name string) (Todo, error) {
+	todo := Todo{}
+	err := r.selectByName.QueryRow(name).Scan(&todo.ID, &todo.Name, &todo.Description, &todo.Completed)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return Todo{}, nil
+		}
+		return Todo{}, err
+	}
+
+	return todo, nil
 }
